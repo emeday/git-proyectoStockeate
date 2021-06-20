@@ -15,6 +15,7 @@
 
         <title>JSP Page</title>
     </head>
+    <!-- comment -->
     <body>
           <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
