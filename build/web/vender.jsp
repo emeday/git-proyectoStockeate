@@ -52,17 +52,30 @@
                 
                 <%
                     String desc;
-                    
-                    %>
-                    <%=
-                        desc =request.getParameter("desc")
+                    String unidad_med;   
+                    String stock,precio;
+                    String cod;
+          
+                        desc = request.getParameter("desc");
+                        unidad_med =request.getParameter("unidad_med");
+                         stock =request.getParameter("stock");
+                         precio=request.getParameter("precio");
+                         cod= request.getParameter("cod");
                         %>
-                <input type="text" name="txtDescripcion" placeholder="Ingresar nombre" class="form-control" value="<%= desc %>">
-                <input type="text" name="txtUnidad_med" placeholder="Ingresar nombre" class="form-control">
-                <input type="text" name="txtStock" placeholder="Ingresar nombre" class="form-control">
-                <input type="text" name="txtunidad_med" placeholder="Ingresar nombre" class="form-control">
+                <label>Descripcion:</label>
+                <input type="text" name="txtDescripcion"  class="form-control" value="<%= desc %>">
+                <label>Unidad de medida:</label>
+                <input type="text" name="txtUnidad_med"  class="form-control" value="<%= unidad_med %>">
+                <label>Stock Actual:</label>
+                <input type="text" name="txtStock"  class="form-control" value="<%= stock %>">
+                <label>Precio Unitario:</label>                
+                <input type="text" name="txtPrecio"  class="form-control" value="<%= precio %>">
+                <label>Cantidad a vender:</label>
+                <input type="text" name="txtCantidad" placeholder="Ingresar cantidad de acuerdo a unidad de medida" 
+                       class="form-control">
           
                 <input type="hidden" name="op" value="vender">
+                <input type="hidden" name="cod" value="<%= cod %>">
                 <input type="submit" class="btn btn-primary" value="Procesar Compra">
 
             </form>

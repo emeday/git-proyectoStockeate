@@ -80,11 +80,13 @@ public class CRUDServlet extends HttpServlet {
                 System.out.println("Error Servlet: "+e);
             }
         }else if (op.equals("vender")) {
-                 String cod=request.getParameter("cod");
+                 Integer cod= Integer.parseInt(request.getParameter("cod"));
+                  Double cantidad=Double.parseDouble(request.getParameter("txtCantidad"));
             try {
            
-                PreparedStatement psta=ConexionDB.getConexion().prepareStatement("delete from empleados where codemp=?");
-                psta.setString(1, cod);
+                PreparedStatement psta=ConexionDB.getConexion().prepareStatement("update productos set stock=? where id_prod=?");
+                psta.setDouble(1, cantidad);
+                psta.setInt(2, cod);
                 psta.executeUpdate();
                 request.getRequestDispatcher("CRUDServlet?op=listar").forward(request, response);
                 
