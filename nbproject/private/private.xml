@@ -3,7 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/UTP%20CICLO%20MARZO/DiseñoWeb-Integrado/Proyecto/Stockeate/web/index.html</file>
+            <file>file:/C:/Users/Kokox/Documents/NetBeansProjects/git-proyectoStockeate/src/java/Servlets/CRUDServlet.java</file>
+            <file>file:/C:/Users/Kokox/Documents/NetBeansProjects/git-proyectoStockeate/src/java/Beans/ProductosBeans.java</file>
+            <file>file:/C:/Users/Kokox/Documents/NetBeansProjects/git-proyectoStockeate/src/java/Beans/UsuariosBeans.java</file>
+            <file>file:/C:/Users/Kokox/Documents/NetBeansProjects/git-proyectoStockeate/web/login.jsp</file>
+            <file>file:/C:/Users/Kokox/Documents/NetBeansProjects/git-proyectoStockeate/web/index.jsp</file>
         </group>
     </open-files>
 </project-private>
