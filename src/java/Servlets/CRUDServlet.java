@@ -178,9 +178,10 @@ public class CRUDServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/index.jsp");
                     
                 } else {
+                    System.out.println("USUARIO INCORRECTO");
                     String msg = "Error: El usuario y/o la clave son incorrectas.";
                     request.setAttribute("msg", msg);
-                    request.getRequestDispatcher("CRUDServlet?op=login").forward(request, response);
+                    request.getRequestDispatcher("login.jsp").forward(request, response);
                 }                
                 
             } catch (SQLException ex) {

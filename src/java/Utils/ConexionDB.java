@@ -16,7 +16,7 @@ public class ConexionDB {
         Connection con =null;
         String cadena="jdbc:mysql://localhost/stockeate?user=root&password=";
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             con= DriverManager.getConnection(cadena);
             System.out.println("Conexion satisfactoria");
         } catch (Exception e) {
