@@ -91,7 +91,7 @@ and open the template in the editor.
                     <th>Descripción</th>
                     <th>Precio</th>
                     <th>Stock</th>
-                    <th>Unidadd</th>                    
+                    <th>Unidad</th>                    
                 </tr>
                 
                 <%
