@@ -67,17 +67,15 @@ public class CRUDServlet extends HttpServlet {
                 ResultSet rs= psta.executeQuery();
                 
                 ArrayList<ProductosBeans> lista=new ArrayList<ProductosBeans>();
+                
                 while (rs.next()) {
                     
                     ProductosBeans prd=new ProductosBeans(rs.getInt(1),rs.getInt(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getDouble(6),rs.getDouble(7));
                     lista.add(prd);
-   
                 }
                 
-                request.setAttribute("listita", lista);
-                request.getRequestDispatcher("listar.jsp").forward(request, response);
-                
-                
+                request.setAttribute("listaprod", lista);
+
             } catch (Exception e) {
                 System.out.println("Error Servlet: "+e);
             }
