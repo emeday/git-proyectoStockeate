@@ -60,6 +60,7 @@ public class CRUDServlet extends HttpServlet {
         
         String op=request.getParameter("op");
    
+        //obtiene la lista de productos
         if (op.equals("listar")) {
             
             try {
@@ -80,6 +81,7 @@ public class CRUDServlet extends HttpServlet {
                 System.out.println("Error Servlet: "+e);
             }
             
+        //no implementado - debe realizar el proceso de salidas
         }else if (op.equals("vender")) {
                  Integer cod= Integer.parseInt(request.getParameter("cod"));
                   Double cantidad=Double.parseDouble(request.getParameter("txtCantidad"));
@@ -95,6 +97,7 @@ public class CRUDServlet extends HttpServlet {
                 System.out.println("Error "+e);
             }
             
+        //no implementado - debe realizar el proceso de entradas
         }else if (op.equals("insertar")) {
             
              String cod=request.getParameter("txtCod");
@@ -117,11 +120,13 @@ public class CRUDServlet extends HttpServlet {
             } catch (Exception e) {
                 System.out.println("Error "+e);
             }
-            
+           
+        //redirige a la página login
         } else if (op.equals("login")){
             //direccionamos a la pagina listar.jsp
             request.getRequestDispatcher("login.jsp").forward(request, response); 
-            
+        
+        //destruye la sesión y redirige al index
         } else if (op.equals("logout")){
             HttpSession session = request.getSession(false);
             if(session != null){
@@ -147,6 +152,7 @@ public class CRUDServlet extends HttpServlet {
             String uname = request.getParameter("uname");
             String pass = request.getParameter("pass");
             
+            //primero se obtiene la información del usuario a partir de username y password
             try {
                 PreparedStatement psta = ConexionDB.getConexion().prepareStatement("SELECT usr.idusuario, usr.username, usr.password, usr.tipo, usr.last_session, usrin.nombre, usrin.apellido FROM usuarios AS usr INNER JOIN usuarios_info AS usrin ON usr.idusuario = usrin.idusuario WHERE usr.username = ? AND usr.password = ?");
                 psta.setString(1, uname);
@@ -160,6 +166,7 @@ public class CRUDServlet extends HttpServlet {
                     Date date = new Date();
                     DateFormat fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");                        
 
+                    //se prepara el query para actualizar last_session
                     PreparedStatement pstau = ConexionDB.getConexion().prepareStatement("UPDATE usuarios SET last_session = ? WHERE username = ?");
                     pstau.setString(1, fechaHora.format(date));
                     pstau.setString(2, uname);
