@@ -148,3 +148,50 @@ body {
     padding-top: .5rem;
     margin-top: 1rem;
 }
+
+/*agregar producto*/
+.addproduct-form {
+    padding: 50px;
+    margin: 30px 0;
+}
+.addproduct-form h1 {
+    color: #19bc9d;
+    font-weight: bold;
+    margin: 0 0 15px;
+}
+
+.addproduct-form .form-group{
+    margin-bottom: 1rem;
+}
+
+.addproduct-form .form-control, .addproduct-form .btn {
+    min-height: 38px;
+    border-radius: 2px;
+}
+.addproduct-form .form-control:focus {
+    border-color: #19bc9d;
+}
+.addproduct-form .btn-primary, .addproduct-form .btn-primary:active {
+    color: #fff;
+    min-width: 150px;
+    font-size: 16px;
+    background: #19bc9d !important;
+    border: none;
+}
+.addproduct-form .btn-primary:hover {
+    background: #15a487 !important; 
+}
+.addproduct-form .btn i {
+    margin-right: 5px;
+}
+.addproduct-form label {
+    opacity: 0.7;
+}
+.addproduct-form textarea {
+    resize: vertical;
+}
+.hint-text {
+    font-size: 15px;
+    padding-bottom: 20px;
+    opacity: 0.6;
+}
