@@ -11,13 +11,17 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import Beans.ProductosBeans;
 import Beans.UsuariosBeans;
+import com.google.gson.Gson;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -60,67 +64,35 @@ public class CRUDServlet extends HttpServlet {
         
         String op=request.getParameter("op");
    
-        //obtiene la lista de productos
+        //obtiene la lista de productos buscando por nombre
         if (op.equals("listar")) {
             
+            String nombreSearch = request.getParameter("nombreSearch");
+            
             try {
-                PreparedStatement psta=ConexionDB.getConexion().prepareStatement("select * from productos");
+                PreparedStatement psta=ConexionDB.getConexion().prepareStatement("SELECT prd.id_prod, cat.idcategoria, cat.nombre_categoria, prd.nombre, prd.descripcion, unid.idunidad, unid.simbolo, unid.nombre_unidad, prd.stock, prd.precio, prd.stockMin, prd.stockMax FROM productos AS prd INNER JOIN categorias AS cat ON prd.idcategoria = cat.idcategoria INNER JOIN unidades AS unid ON prd.idunidad = unid.idunidad WHERE prd.nombre LIKE ? ORDER BY prd.id_prod ASC");
+                psta.setString(1, "%" + nombreSearch + "%");
                 ResultSet rs= psta.executeQuery();
                 
-                ArrayList<ProductosBeans> lista=new ArrayList<ProductosBeans>();
+                ArrayList<ProductosBeans> lista=new ArrayList<>();
                 
                 while (rs.next()) {
-                    
-                    ProductosBeans prd=new ProductosBeans(rs.getInt(1),rs.getInt(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getDouble(6),rs.getDouble(7));
+                    ProductosBeans prd=new ProductosBeans(rs.getInt(1),rs.getInt(2), rs.getString(3),rs.getString(4),rs.getString(5), rs.getInt(6),rs.getString(7),rs.getString(8), rs.getDouble(9),rs.getDouble(10), rs.getDouble(11), rs.getDouble(12));
                     lista.add(prd);
                 }
                 
-                request.setAttribute("listaprod", lista);
+                //request.setAttribute("listaprod", lista);
+                
+                //se crea la cadena en json
+                String json = new Gson().toJson(lista);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(json);                 
 
             } catch (Exception e) {
                 System.out.println("Error Servlet: "+e);
             }
-            
-        //no implementado - debe realizar el proceso de salidas
-        }else if (op.equals("vender")) {
-                 Integer cod= Integer.parseInt(request.getParameter("cod"));
-                  Double cantidad=Double.parseDouble(request.getParameter("txtCantidad"));
-            try {
-           
-                PreparedStatement psta=ConexionDB.getConexion().prepareStatement("update productos set stock=? where id_prod=?");
-                psta.setDouble(1, cantidad);
-                psta.setInt(2, cod);
-                psta.executeUpdate();
-                request.getRequestDispatcher("CRUDServlet?op=listar").forward(request, response);
-                
-            } catch (Exception e) {
-                System.out.println("Error "+e);
-            }
-            
-        //no implementado - debe realizar el proceso de entradas
-        }else if (op.equals("insertar")) {
-            
-             String cod=request.getParameter("txtCod");
-             String nom=request.getParameter("txtNom");
-             int edad=Integer.parseInt(request.getParameter("txtEdad"));
-             String sexo=request.getParameter("txtSexo");
-             String pas=request.getParameter("txtPas");
-             
-            try {
-                PreparedStatement psta=ConexionDB.getConexion().prepareStatement("insert into empleados values(?,?,?,?,?)");
-                psta.setString(1, cod);
-                psta.setString(2, nom);
-                psta.setInt(3, edad);
-                psta.setString(4, sexo);
-                psta.setString(5, pas);
-                
-                psta.executeUpdate();
-                request.getRequestDispatcher("CRUDServlet?op=listar").forward(request, response);
-                
-            } catch (Exception e) {
-                System.out.println("Error "+e);
-            }
-           
+              
         //redirige a la página login
         } else if (op.equals("login")){
             //direccionamos a la pagina listar.jsp
@@ -133,7 +105,221 @@ public class CRUDServlet extends HttpServlet {
                 session.invalidate();
                 request.getRequestDispatcher("/index.jsp").forward(request,response); 
             }
+        
+        //muestra las unidades y categorías en la página de agregar producto
+        } else if (op.equals("addProd")){
+            try {
+                PreparedStatement psta= ConexionDB.getConexion().prepareStatement("SELECT * FROM categorias");
+                PreparedStatement pstb= ConexionDB.getConexion().prepareStatement("SELECT * FROM unidades");
+                ResultSet rs = psta.executeQuery();
+                ResultSet rsb = pstb.executeQuery();
+                
+                ArrayList<ProductosBeans> listaPrdCat = new ArrayList<>();
+                ArrayList<ProductosBeans> listaPrdUnid = new ArrayList<>();
+                
+                while(rs.next()){
+                    ProductosBeans prd = new ProductosBeans(rs.getInt(1), rs.getString(2));
+                    listaPrdCat.add(prd);
+                }
+                
+                while(rsb.next()){
+                    ProductosBeans prd = new ProductosBeans(rsb.getInt(1), rsb.getString(2), rsb.getString(3));
+                    listaPrdUnid.add(prd);
+                }
+                
+                request.setAttribute("listaPrdCat", listaPrdCat);
+                request.setAttribute("listaPrdUnid", listaPrdUnid);
+                request.getRequestDispatcher("addProd.jsp").forward(request, response);                
+            } catch (SQLException ex) {
+                Logger.getLogger(CRUDServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        //agrega un producto a la base de datos
+        } else if (op.equals("doAddProd")){
+            //ingresa un producto en la base de datos
+            int prdId = 0;
+            Map<String, String> map = new HashMap<>();     
             
+            try {
+                PreparedStatement psta = ConexionDB.getConexion().prepareStatement("INSERT INTO productos(idcategoria, nombre, descripcion, idunidad, stock, precio, stockMinRate, stockMaxRate) "
+                        + "VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                
+                int idcategoria = Integer.parseInt(request.getParameter("selectCat"));
+                String nombre = request.getParameter("inputNombre");
+                String descripcion = request.getParameter("inputDescripcion");
+                int idunidad = Integer.parseInt(request.getParameter("selectUnid"));
+                double stock = 0; // el stock es 0 al crear el producto
+                double precio = Double.parseDouble(request.getParameter("inputPrecio"));
+                double stockMinRate = Double.parseDouble(request.getParameter("inputMinRate"))/100;
+                double stockMaxRate = 1; //1 = 100% de stock máximo [futura implementación]
+                
+                psta.setInt(1, idcategoria);
+                psta.setString(2, nombre);
+                psta.setString(3, descripcion);
+                psta.setInt(4, idunidad);
+                psta.setDouble(5, stock);
+                psta.setDouble(6, precio);
+                psta.setDouble(7, stockMinRate);
+                psta.setDouble(8, stockMaxRate);
+                //ejecuto el query
+                psta.executeUpdate();
+                
+                //objeto ResultSet con el ID generado en "psta"
+                ResultSet rs = psta.getGeneratedKeys();
+                
+                if (rs.next()){
+                    //id obtenido de psta
+                    prdId = rs.getInt(1);
+                    //se prepara el segundo query
+                    PreparedStatement pstb = ConexionDB.getConexion().prepareStatement("INSERT INTO movimientos(id_prod, id_tipo_movimiento, cantidad, idusuario) VALUES (?,?,?,?)");
+
+                    //obtengo los datos de la sesión
+                    UsuariosBeans usr = (UsuariosBeans)request.getSession(false).getAttribute("sesUsername");
+            
+                    int tipoMovimiento = 1; //1 = creado
+                    double cantidad = 0; //0 stock al ser creado
+                    int idUsuario = usr.getIdusuario();
+
+                    pstb.setInt(1, prdId);
+                    pstb.setInt(2, tipoMovimiento);
+                    pstb.setDouble(3, cantidad);
+                    pstb.setInt(4, idUsuario);
+                    //ejecuto el query    
+                    pstb.executeUpdate();
+
+                    //el query de inserción en "movimientos" fue exitoso, se envía mensaje de exito al agregar un producto
+                    System.out.println("[PROCESO EXITOSO] El producto y el movimiento se agregaron correctamente.");
+
+                    //se setea los mensajes en "map"
+                    map.put("estado", "exitoso");
+                    map.put("mensaje", "El producto y el movimiento se agregaron correctamente.");
+
+                    //se crea la cadena en json
+                    String json = new Gson().toJson(map);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(json);                     
+                }        
+            } catch (Exception e) {
+                System.out.println("Error Servlet: " + e);
+            }
+            
+        } else if (op.equals("eliminar")){
+            String cod = request.getParameter("codigo");
+            try {
+                PreparedStatement psta = ConexionDB.getConexion().prepareStatement("DELETE FROM movimientos WHERE id_prod = ?");
+                psta.setString(1, cod);
+                psta.executeUpdate();
+                
+                PreparedStatement pstb = ConexionDB.getConexion().prepareStatement("DELETE FROM productos WHERE id_prod = ?");
+                pstb.setString(1, cod);
+                pstb.executeUpdate();
+                
+                request.getRequestDispatcher("/index.jsp").forward(request,response);   
+            } catch (Exception e) {
+                System.out.println("Error Eliminar: "+e);
+            }
+            
+        //setea los valores del producto en la interfaz de edición    
+        } else if (op.equals("editar")){
+            String cod = request.getParameter("codigo");
+
+            try {
+                PreparedStatement psta = ConexionDB.getConexion().prepareStatement("SELECT prd.id_prod, cat.idcategoria, cat.nombre_categoria, prd.nombre, prd.descripcion, unid.idunidad, unid.simbolo, unid.nombre_unidad, prd.stock, prd.precio, prd.stockMin, prd.stockMax FROM productos AS prd INNER JOIN categorias AS cat ON prd.idcategoria = cat.idcategoria INNER JOIN unidades AS unid ON prd.idunidad = unid.idunidad WHERE prd.id_prod = ?");
+                psta.setString(1, cod);
+                ResultSet rs = psta.executeQuery();
+                
+                ArrayList<ProductosBeans> listaInfoProd=new ArrayList<>();
+                
+                if(rs.next()){
+                    ProductosBeans prd=new ProductosBeans(rs.getInt(1),rs.getInt(2), rs.getString(3),rs.getString(4),rs.getString(5), rs.getInt(6),rs.getString(7),rs.getString(8), rs.getDouble(9),rs.getDouble(10), rs.getDouble(11), rs.getDouble(12));
+                    listaInfoProd.add(prd);
+                } else {
+                    System.out.println("Error en la consulta.");
+                } 
+                
+                request.setAttribute("listaInfoProd", listaInfoProd);
+                
+                //obtiene las categorías y unidades de la bd
+                PreparedStatement pstb= ConexionDB.getConexion().prepareStatement("SELECT * FROM categorias");
+                PreparedStatement pstc= ConexionDB.getConexion().prepareStatement("SELECT * FROM unidades");
+                ResultSet rsb = pstb.executeQuery();
+                ResultSet rsc = pstc.executeQuery();
+                
+                ArrayList<ProductosBeans> listaPrdCat = new ArrayList<>();
+                ArrayList<ProductosBeans> listaPrdUnid = new ArrayList<>();
+                
+                while(rsb.next()){
+                    ProductosBeans prd = new ProductosBeans(rsb.getInt(1), rsb.getString(2));
+                    listaPrdCat.add(prd);
+                }
+                
+                while(rsc.next()){
+                    ProductosBeans prd = new ProductosBeans(rsc.getInt(1), rsc.getString(2), rsc.getString(3));
+                    listaPrdUnid.add(prd);
+                }
+                
+                request.setAttribute("listaPrdCat", listaPrdCat);
+                request.setAttribute("listaPrdUnid", listaPrdUnid);                
+                request.getRequestDispatcher("editProd.jsp").forward(request, response); 
+            } catch (Exception e) {
+                System.out.println("Error Servlet: " + e);
+            }
+            
+        } else if (op.equals("doEditProd")){
+            Map<String, String> map = new HashMap<>();
+            
+            try {
+                PreparedStatement psta = ConexionDB.getConexion().prepareStatement("UPDATE productos SET idcategoria = ?, nombre = ?, descripcion = ?, idunidad = ?, precio = ?, stockMin = ? WHERE id_prod = ?");
+                
+                int idcategoria = Integer.parseInt(request.getParameter("selectCat"));
+                String nombre = request.getParameter("inputNombre");
+                String descripcion = request.getParameter("inputDescripcion");
+                int idunidad = Integer.parseInt(request.getParameter("selectUnid"));
+                double precio = Double.parseDouble(request.getParameter("inputPrecio")); 
+                int idProd = Integer.parseInt(request.getParameter("inputIdProd"));
+                double stockMin = Double.parseDouble(request.getParameter("inputMinRate"));
+                //double stockMaxRate = 0; //1 = 100% de stock máximo [futura implementación]                
+                
+                psta.setInt(1, idcategoria);
+                psta.setString(2, nombre);
+                psta.setString(3, descripcion);
+                psta.setInt(4, idunidad);
+                psta.setDouble(5, precio);
+                psta.setDouble(6, stockMin);
+                psta.setInt(7, idProd);                
+                //ejecuto query
+                psta.executeUpdate();
+                
+                //agregamos el movimiento                
+                PreparedStatement pstb = ConexionDB.getConexion().prepareStatement("INSERT INTO movimientos(id_prod, id_tipo_movimiento, idusuario) VALUES (?,?,?)");
+                
+                UsuariosBeans usr = (UsuariosBeans)request.getSession(false).getAttribute("sesUsername");                
+                int tipoMovimiento = 5; //5 = editado
+                int idUsuario = usr.getIdusuario();  
+                
+                pstb.setInt(1, idProd);
+                pstb.setInt(2, tipoMovimiento);
+                pstb.setInt(3, idUsuario);
+                //ejecuto query
+                pstb.executeUpdate();
+                
+                //el query de inserción en "movimientos" fue exitoso, se envía mensaje de exito al editar un producto
+                System.out.println("[PROCESO EXITOSO] El producto y el movimiento se actualizo/agrego correctamente.");
+
+                //se setea los mensajes en "map"
+                map.put("estado", "exitoso");
+                map.put("mensaje", "El producto se actualizó correctamente. Se agregó el registro de movimiento respectivo.");
+
+                //se crea la cadena en json
+                String json = new Gson().toJson(map);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(json);                  
+                
+            } catch (Exception e) {
+                System.out.println("Error Servlet: " + e);
+            }
         }
     }
 
@@ -192,8 +378,7 @@ public class CRUDServlet extends HttpServlet {
             } catch (SQLException ex) {
                 Logger.getLogger(CRUDServlet.class.getName()).log(Level.SEVERE, null, ex);
             }   
-        }
-           
+        }       
     }
 
     /**
