@@ -108,8 +108,7 @@ $(document).ready(function () {
                 })
                 // Cuando la petición de los datos fue correcta, mediante el método 'done' imprimo los datos
                 .done(function(d) {                   
-                    if (value===$(that).val()){
-                        console.log(d);  
+                    if (value===$(that).val()){ 
                         //se prerenderiza la data en el div
                         var template = templateMissions(d);
                         $('.tblListaProd').html("");
@@ -162,7 +161,7 @@ $(document).ready(function () {
                 })
                 // Cuando la petición de los datos fue correcta, mediante el método 'done' imprimo los datos
                 .done(function(d) {                   
-                    if (value===$(that).val()){  
+                    if (value===$(that).val()){
                         //se prerenderiza la data en el div
                         var template = templateMissions(d);
                         $('.tblListaMov').html("");
