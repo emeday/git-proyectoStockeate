@@ -261,7 +261,7 @@ $("#form-addoutStock").submit(function(e){
         // Cuando la petición de los datos fue correcta, mediante el método 'done' imprimo los datos
         .done(function(d) {
             console.log(d);
-            //se prerenderiza la data en el div con clase .render-alerta
+            //se prerenderiza la data en el div con clase .render-alerta.
             var template = templateMissions(d);
             $('.render-alerta').append(template);
             $('input[name=inputStock]').val('');
