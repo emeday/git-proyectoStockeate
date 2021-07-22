@@ -14,7 +14,7 @@ import java.sql.DriverManager;
 public class ConexionDB {
     public static Connection getConexion(){
         Connection con =null;
-        String cadena="jdbc:mysql://localhost/stockeate?user=root&password=";
+        String cadena="jdbc:mysql://localhost/stockeate?user=root&password=&useUnicode=true&characterEncoding=UTF-8";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con= DriverManager.getConnection(cadena);

@@ -24,8 +24,9 @@ public class ProductosBeans {
     private double precio;
     private double stockMin;
     private double stockMax;
+    private String alerta;
 
-    public ProductosBeans(int id_prod, int idcategoria, String nombre_categoria, String nombre, String descripcion, int idunidad, String simbolo_unidad, String nombre_unidad, double stock, double precio, double stockMin, double stockMax) {
+    public ProductosBeans(int id_prod, int idcategoria, String nombre_categoria, String nombre, String descripcion, int idunidad, String simbolo_unidad, String nombre_unidad, double stock, double precio, double stockMin, double stockMax, String alerta) {
         this.id_prod = id_prod;
         this.idcategoria = idcategoria;
         this.nombre_categoria = nombre_categoria;
@@ -38,6 +39,7 @@ public class ProductosBeans {
         this.precio = precio;
         this.stockMin = stockMin;
         this.stockMax = stockMax;
+        this.alerta = alerta;
     }
 
     public ProductosBeans(int idcategoria, String nombre_categoria) {
@@ -146,4 +148,13 @@ public class ProductosBeans {
     public void setStockMax(double stockMax) {
         this.stockMax = stockMax;
     }
+
+    public String getAlerta() {
+        return alerta;
+    }
+
+    public void setAlerta(String alerta) {
+        this.alerta = alerta;
+    }
+    
 }

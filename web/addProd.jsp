@@ -64,7 +64,7 @@
                                         <div class="input-group-append">
                                             <span class="input-group-text">S/</span>
                                         </div>                                         
-                                        <input type="number" class="form-control" id="inputPrecio" name="inputPrecio" placeholder="Precio de venta..." required>                       
+                                        <input type="number" class="form-control" id="inputPrecio" step=".01" name="inputPrecio" placeholder="Precio de venta..." required>                       
                                     </div>                                    
                                 </div>                                        
                                 <div class="col-sm-3">
@@ -86,9 +86,9 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
-                                    <label for="inputMinRate">Stock Mínimo</label>                                    
+                                    <label for="inputMin">Stock Mínimo</label>                                    
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="inputMinRate" name="inputMinRate" placeholder="Mínimo de stock..." required>
+                                        <input type="number" class="form-control" id="inputMin" name="inputMin" placeholder="Mínimo de stock..." required>
                                         <div class="input-group-append">
                                             <span class="input-group-text">und.</span>
                                         </div>                        

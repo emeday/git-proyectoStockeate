@@ -30,9 +30,15 @@
                     Opciones
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="CRUDServlet?op=addProd">Agregar Producto</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Trazabilidad</a></li>
+                      <%
+                        if(usr.getTipo() == 2){
+                      %>
+                            <li><a class="dropdown-item" href="CRUDServlet?op=addProd">Agregar Producto</a></li>      
+                            <li><hr class="dropdown-divider"></li>
+                      <%  
+                        }  
+                          %>
+                    <li><a class="dropdown-item" href="CRUDServlet?op=trace">Trazabilidad</a></li>
                   </ul>
                 </li>
               </ul>
@@ -42,7 +48,6 @@
                     <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle user-action"><b class="caret c-gris"> <%=usr.getUsername()%> </b></a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a href="#" class="dropdown-item c-gris"><i class="fa fa-user-o c-gris"></i> Perfil</a></li>
-                        <li><a href="#" class="dropdown-item c-gris"><i class="fa fa-sliders c-gris"></i> Opciones</a></a></li>
                         <li><div class="dropdown-divider"></div></li>
                         <li><a href="CRUDServlet?op=logout" class="dropdown-item c-gris"><i class="material-icons c-gris">&#xE8AC;</i> Salir</a></li>
                     </ul>

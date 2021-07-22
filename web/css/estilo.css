@@ -211,7 +211,6 @@ and open the template in the editor.
     z-index:0;
     
 }
-
 .form-style{
     width:100%;
     display: flex;
@@ -363,4 +362,21 @@ input{
     height: 50px;
     width: 110px;
     background: blue
+}
+
+/*Alerta de stock*/
+.alertaStock{
+    background-color: #ad627a;
+    font-weight: bold;
+}
+.alertaStock td{
+    color: white;
+}
+.alertaToolTip{
+    font-weight: bold;
+    color: #ad627a;
+}
+.tipoBusqueda{
+    height: 60px;
+    border: 2px solid #d6d4d4;
 }

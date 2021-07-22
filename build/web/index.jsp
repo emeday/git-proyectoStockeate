@@ -46,6 +46,7 @@ and open the template in the editor.
             <div class="row borde-i">                
                 <div class="col-12">
                     <h4>Lista de productos</h4>
+                    <p><b>[ATENCIÓN]</b> - Los productos con fondo <span class="alertaToolTip">RESALTADO</span> tiene menos stock que el mínimo establecido.</p>
                     <div class="render-listaProd tblListaProd" id="render-listaProd">
                         
                     </div>
@@ -67,7 +68,11 @@ and open the template in the editor.
                         </thead>
                         <tbody>
                         {{#each this}}
+                        {{#if_eq alerta 'normalStock'}}
                         <tr>
+                        {{else}}
+                        <tr class="alertaStock">
+                        {{/if_eq}}
                             <td>{{id_prod}}</td>
                             <td>{{nombre}}</td>
                             <td>{{descripcion}}</td>
@@ -76,7 +81,13 @@ and open the template in the editor.
                             <td>{{stock}}</td>
                             <td>{{nombre_unidad}}</td>
                             <td>{{stockMin}}</td>
-                            <td><a href="#" data-bs-href="CRUDServlet?op=eliminar&codigo={{id_prod}}" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fa fa-trash"></i></a>&nbsp&nbsp<a href="CRUDServlet?op=editar&codigo={{id_prod}}"><i class="fa fa-pencil"></i></a>&nbsp&nbsp<a href="#" class="ioMovimiento"><i class="fa fa-arrow-down"></i></a>&nbsp&nbsp<a href="#" class="ioMovimiento" data-bs-toggle="modal" data-bs-target="#agregarStock"><i class="fa fa-arrow-up"></i></a></td>                          
+                            <td><%
+                                    if(usr.getTipo() == 2){
+                                        %>
+                                        <a href="#" data-bs-href="CRUDServlet?op=eliminar&codigo={{id_prod}}" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fa fa-trash"></i></a>&nbsp&nbsp<a href="CRUDServlet?op=editar&codigo={{id_prod}}"><i class="fa fa-pencil"></i></a>&nbsp&nbsp
+                                <%    
+                                    }
+                                %><a href="#" class="ioMovimiento" data-tipo-value="salida" data-id-value="{{id_prod}}" data-bs-toggle="modal" data-bs-target="#agregarStock"><i class="fa fa-arrow-down"></i></a>&nbsp&nbsp<a href="#" class="ioMovimiento" data-tipo-value="entrada" data-id-value="{{id_prod}}" data-bs-toggle="modal" data-bs-target="#agregarStock"><i class="fa fa-arrow-up"></i></a></td>                          
                         </tr>
                         {{/each}}
                         </tbody>
@@ -111,33 +122,50 @@ and open the template in the editor.
         <div class="modal fade" id="agregarStock" tabindex="-1" role="dialog" aria-labelledby="agregarStock" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form>
+                    <form id="form-addoutStock">
                         <div class="modal-header">
-                            <h5>Agregar stock...</h5>
+                            <h5 id="modalIOStockTitulo">Titulo...</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>                      
                         </div>
                         <div class="modal-body">
-                            <p>Ingrese la entrada de stock:</p>
+                            <p id="modalIOStockDescripcion">Ingrese la entrada de stock:</p>
                               <div class="mb-3">
                                 <label for="nombreProducto" class="col-form-label">Producto:</label>
                                 <input type="text" name="nombreProducto" class="form-control" id="nombreProducto" disabled="">
+                                <input type="hidden" name="inputTipoStock"/>
+                                <input type="hidden" name="inputIdProd"/>
                               </div>
                               <div class="mb-3">
-                                <label for="inputStock" class="col-form-label">Entrada:</label>
-                                <input type="number" name="inputStock" class="form-control" id="inputStock" required>
+                                <label for="inputStock" class="col-form-label">Entrada o salida:</label>
+                                <input type="number" name="inputStock" class="form-control sumarestaInput" id="inputStock" required>
                               </div>
                               <div class="mb-3">
                                 <label for="outputStock" class="col-form-label">Stock resultante:</label>
+                                <input type="hidden" name="hiddenOutputStock" class="actualStockInput"/>
                                 <input type="number" name="outputStock" class="form-control" id="outputStock" disabled="">
                               </div>
                               <div class="mb-3">
-                                <label for="dateStock" class="col-form-label">Fecha y hora de entrada:</label>
+                                <label for="dateStock" class="col-form-label">Fecha y hora de movimiento:</label>
                                 <input type="text" name="dateStock" class="form-control iDateStock" id="dateStock" disabled="">
                               </div>
+                            <div class="render-alerta mb-3" id="render-alerta"></div>  
+                            <script id="plantilla-alerta" type="text/x-handlebars-template">
+                                    {{#if_eq estado 'exitoso'}}
+                                        <div class="alert alert-success">
+                                            <h5>Exitoso</h5>
+                                            <p>{{mensaje}}</p>  
+                                        </div>
+                                    {{else}}
+                                        <div class="alert alert-danger">
+                                            <h5>Fallido</h5>
+                                            <p>{{mensaje}}</p>  
+                                        </div>                            
+                                    {{/if_eq}}                 
+                            </script> 
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-success" >Confirmar</button>
+                            <button type="submit" class="btn btn-success" >Confirmar</button>               
                         </div>                            
                     </form>
                 </div>

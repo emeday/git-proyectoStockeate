@@ -106,9 +106,9 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
-                                    <label for="inputMinRate">Stock Mínimo</label>                                    
+                                    <label for="inputMin">Stock Mínimo</label>                                    
                                     <div class="input-group">
-                                        <input type="number" class="form-control" id="inputMinRate" name="inputMinRate" value="<%=oListaInfoProd.getStockMin()%>" placeholder="Mínimo de stock..." required>
+                                        <input type="number" class="form-control" id="inputMin" name="inputMin" value="<%=oListaInfoProd.getStockMin()%>" placeholder="Mínimo de stock..." required>
                                         <div class="input-group-append">
                                             <span class="input-group-text">unid.</span>
                                         </div>                        
