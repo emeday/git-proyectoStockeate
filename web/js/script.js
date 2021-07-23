@@ -305,7 +305,36 @@ $('#agregarStock').on('hidden.bs.modal', function () {
     }
 });
 
-//
+//REPORTE DE MOVIMIENTO DE PRODUCTOS
+$('#reporteTrace').click(function(e){
+    e.preventDefault();
+
+    //serealizo el valor del campo de búsqueda
+    var movimientoSearch = $('input[name=movimientoSearch]');
+    var selectTipoBusqueda = $('#selectTipoBusqueda');
+    var data = '&selectTipoBusqueda=' + selectTipoBusqueda.val() + '&movimientoSearch=' + movimientoSearch.val(); 
+    
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    
+    window.open(baseUrl + "/PDFServlet?op=doTracePrint" + data);      
+});
+
+//REPORTE DE PRODUCTOS
+$('#reporteProd').click(function(e){
+    e.preventDefault();
+
+    //serealizo el valor del campo de búsqueda
+    var nombreSearch = $('input[name=nombreSearch]');
+    var data = '&nombreSearch=' + nombreSearch.val();  
+    
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    
+    window.open(baseUrl + "/PDFServlet?op=doProdPrint" + data);      
+});
+
+//funcion para mostrar un preview del total del stock
 function setTotal(operacion) {
    var total = 0;
    

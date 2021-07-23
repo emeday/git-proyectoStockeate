@@ -39,6 +39,9 @@ and open the template in the editor.
                         <div class="col-md-8">
                             <div class="search"> <i class="fa fa-search"></i> <input type="text" id="buscador-main" name="nombreSearch" class="form-control" placeholder="Ingresa el nombre del producto"> <button class="btn btn-primary">Buscar</button> </div>
                         </div>
+                        <div class="col-md-3 fixButton">
+                            <button type="button" id="reporteProd" class="btn btn-primary btn-lg tipoBusqueda">Reporte PDF</button>
+                        </div>                        
                     </div>                  
                 </div>
             </div>

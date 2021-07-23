@@ -35,7 +35,7 @@
                 </div>               
             </div>
 
-            <div class="row borde-s borde-i">
+            <div class="row borde-s borde-i d-flex justify-content-center align-items-center">
                 <div class="col-12 ">
                     <div class="row height d-flex justify-content-center align-items-center">
                         <div class="col-md-3">
@@ -47,12 +47,15 @@
                                 <option value="userMov">Nombre de Usuario</option>
                             </select>                              
                         </div>
-                        <div class="col-md-8">                          
+                        <div class="col-md-6">                          
                             <div class="search"> 
                                 <i class="fa fa-search"></i> 
                                 <input type="text" id="buscador-mov" name="movimientoSearch" class="form-control" placeholder="Ingresa el término de búsqueda"> 
                                 <button class="btn btn-primary">Buscar</button> 
                             </div>
+                        </div>
+                        <div class="col-md-3 fixButton">
+                            <button type="button" id="reporteTrace" class="btn btn-primary btn-lg tipoBusqueda">Reporte PDF</button>
                         </div>
                     </div>                  
                 </div>
