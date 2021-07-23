@@ -51,7 +51,7 @@ and open the template in the editor.
                     <h4>Lista de productos</h4>
                     <p><b>[ATENCIÓN]</b> - Los productos con fondo <span class="alertaToolTip">RESALTADO</span> tiene menos stock que el mínimo establecido.</p>
                     <div class="render-listaProd tblListaProd" id="render-listaProd">
-                        
+                        <!-- comment -->
                     </div>
                 </div> 
                 <script id="plantilla-listaProd" type="text/x-handlebars-template">
